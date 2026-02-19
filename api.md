@@ -187,6 +187,7 @@ X-API-Token: your_api_token_here
 | GET | /api/node/info | 獲取節點資訊 | Node Token |
 | POST | /api/node/store | 儲存檔案 | Node Token |
 | GET | /api/node/retrieve/{id} | 取得檔案 | Node Token |
+| POST | /api/node/batch-download | 批次下載多個檔案（ZIP壓縮） | Node Token |
 | DELETE | /api/node/delete/{id} | 刪除檔案 | Node Token |
 | GET | /api/node/files/list | 列出所有檔案 | Node Token |
 | GET | /api/node/folder/list | 列出資料夾內容 | Node Token |
@@ -204,6 +205,7 @@ X-API-Token: your_api_token_here
 | GET | /api/file/list | 列出檔案 | 登入 + file:read |
 | GET | /api/file/by-node/{node_id} | 按節點列出檔案 | 登入 |
 | GET | /api/file/download/{id} | 下載檔案 | 登入 + file:download |
+| POST | /api/file/batch-download | 批次下載多個檔案（ZIP壓縮） | 登入 + file:download |
 | GET | /api/file/preview/{path} | 預覽檔案（圖片/PDF） | 登入 + file:preview |
 | DELETE | /api/file/{id} | 刪除檔案 | 登入 + file:delete |
 | POST | /api/file/move | 移動檔案 | 登入 + file:move |
@@ -497,7 +499,25 @@ node_id: (可選，指定上傳到哪個節點)
 
 ### GET /api/file/download/{id}
 
-下載檔案。
+下載單一檔案。
+
+---
+
+### POST /api/file/batch-download
+
+批次下載多個檔案為 ZIP 壓縮檔。
+
+**請求：**
+```json
+{
+  "node_id": "node_123",
+  "file_ids": ["file_1", "file_2", "file_3"]
+}
+```
+
+**回應：**
+- 返回 ZIP 壓縮檔的二进制数据，Content-Type 为 application/zip
+- Content-Disposition 標頭會設置為 attachment
 
 ---
 
