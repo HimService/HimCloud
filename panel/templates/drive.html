@@ -880,55 +880,62 @@
         }
         
         // 批量下載
-        function batchDownload() {
+        async function batchDownload() {
             if (selectedFiles.size === 0) return;
             
             const fileIds = Array.from(selectedFiles);
-            let index = 0;
             
-            // 檢查是否有彈出視窗被阻止
-            let popupBlocked = false;
-            
-            // 嘗試開啟第一個視窗來檢測
-            const testWindow = window.open('about:blank', '_blank');
-            if (!testWindow || testWindow.closed || typeof testWindow.closed === 'undefined') {
-                popupBlocked = true;
-            } else {
-                testWindow.close();
-            }
-            
-            if (popupBlocked) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: '彈出視窗被阻止',
-                    text: '請允許彈出視窗以下載檔案'
-                });
-                return;
-            }
-            
-            // 逐個開啟下載視窗（使用延遲避免被阻擋）
-            function downloadNext() {
-                if (index < fileIds.length) {
-                    const fileId = fileIds[index];
-                    const newWindow = window.open('/api/file/download/' + fileId, '_blank');
-                    if (!newWindow || newWindow.closed) {
-                        // 如果無法開啟新視窗，嘗試使用 iframe
-                        const iframe = document.createElement('iframe');
-                        iframe.style.display = 'none';
-                        iframe.src = '/api/file/download/' + fileId;
-                        document.body.appendChild(iframe);
-                        setTimeout(() => document.body.removeChild(iframe), 5000);
-                    }
-                    index++;
-                    // 延遲開啟下一個
-                    setTimeout(downloadNext, 300);
-                } else {
-                    // 全部下載完成後清除選取
-                    clearSelection();
+            // 顯示載入中
+            Swal.fire({
+                title: '正在準備下載...',
+                html: '正在壓縮檔案，請稍候',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
                 }
-            }
+            });
             
-            downloadNext();
+            try {
+                const res = await fetch('/api/file/batch-download', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        node_id: currentNodeId,
+                        file_ids: fileIds
+                    })
+                });
+                
+                if (res.ok) {
+                    // 取得 ZIP 檔案
+                    const blob = await res.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `download_${Date.now()}.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    Swal.close();
+                    clearSelection();
+                    showToast('下載完成', 'success');
+                } else {
+                    const data = await res.json();
+                    Swal.fire({
+                        icon: 'error',
+                        title: '下載失敗',
+                        text: data.error || '無法下載檔案'
+                    });
+                }
+            } catch (e) {
+                console.error('Batch download failed:', e);
+                Swal.fire({
+                    icon: 'error',
+                    title: '下載失敗',
+                    text: '無法連接伺服器'
+                });
+            }
         }
         
         // 顯示批量移動對話框

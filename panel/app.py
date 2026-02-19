@@ -1365,6 +1365,75 @@ def delete_file(file_id):
         save_quotas(quotas)
     return jsonify({'success': True, 'message': '檔案已刪除'})
 
+# ==================== 批次下載 API ====================
+
+@app.route('/api/file/batch-download', methods=['POST'])
+@api_token_required('file:download')
+@login_required
+def batch_download_files():
+    """批次下載多個檔案為 ZIP 壓縮檔"""
+    user_id = session.get('user_id')
+    role = session.get('role')
+    
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': '無請求數據'}), 400
+    except Exception:
+        return jsonify({'success': False, 'error': '無效的請求'}), 400
+    
+    file_ids = data.get('file_ids', [])
+    node_id = data.get('node_id')
+    
+    if not file_ids:
+        return jsonify({'success': False, 'error': '請選擇要下載的檔案'}), 400
+    
+    if not node_id:
+        return jsonify({'success': False, 'error': '請指定節點ID'}), 400
+    
+    nodes = load_nodes()
+    if node_id not in nodes:
+        return jsonify({'success': False, 'error': '節點不存在'}), 404
+    
+    node = nodes[node_id]
+    
+    # 獲取 Node 的認證資訊
+    node_token = node.get('token', '')
+    node_token_id = node.get('token_id', '')
+    
+    try:
+        # 調用 Node 的批次下載 API
+        response = requests.post(
+            f"http://{node['host']}:{node['port']}/api/node/batch-download",
+            json={'file_ids': file_ids, 'user_id': user_id},
+            timeout=300,  # 較長的超時時間因為要生成 ZIP
+            headers={
+                'X-Token-Id': node_token_id,
+                'token': node_token,
+                'Content-Type': 'application/json'
+            },
+            stream=True
+        )
+        
+        if response.status_code == 200:
+            # 直接將 Node 的回應轉發給客戶端
+            from flask import Response
+            return Response(
+                response.iter_content(chunk_size=8192),
+                mimetype='application/zip',
+                headers={
+                    'Content-Disposition': f'attachment; filename=download_{int(time.time())}.zip'
+                }
+            )
+        else:
+            try:
+                error_data = response.json()
+                return jsonify(error_data), response.status_code
+            except:
+                return jsonify({'success': False, 'error': f'下載失敗: {response.status_code}'}), response.status_code
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 # ==================== Node 檔案列表 API ====================
 
 @app.route('/api/node/files', methods=['GET'])
