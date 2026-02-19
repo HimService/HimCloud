@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HimCloud 管理後台</title>
+    <!-- Favicon -->
+    <link rel="icon" href="/icon.png" type="image/png">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #a78bfa;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+        
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+        
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .brand-logo i {
+            font-size: 3.5rem;
+            color: var(--secondary-color);
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+        
+        .brand-logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-control, .form-select {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background: var(--dark-bg);
+            border-color: var(--secondary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        .header {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .header-brand i {
+            font-size: 1.75rem;
+            color: var(--secondary-color);
+        }
+        
+        .header-brand h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .nav-tabs {
+            border: none;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-tabs .nav-link {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: var(--secondary-color);
+            color: var(--text-primary);
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: transparent;
+            color: white;
+        }
+        
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-icon.primary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-color);
+        }
+        
+        .stat-icon.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success-color);
+        }
+        
+        .stat-icon.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .stat-icon.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .stat-info h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .stat-info p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .table {
+            margin: 0;
+            color: var(--text-primary) !important;
+            background: transparent !important;
+            --bs-table-bg: transparent !important;
+            --bs-table-accent-bg: transparent !important;
+        }
+        
+        .table.table-striped > tbody > tr:nth-of-type(odd) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .table > thead {
+            background: var(--dark-bg) !important;
+        }
+        
+        .table > thead th {
+            border: none !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary) !important;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            background: var(--dark-bg);
+        }
+        
+        .table > tbody > tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            background: transparent !important;
+        }
+        
+        .table > tbody > tr:hover {
+            background: rgba(139, 92, 246, 0.1) !important;
+        }
+        
+        .table > tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
+            background: transparent !important;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.online {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success-color);
+        }
+        
+        .status-badge.offline {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+        }
+        
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .btn-close {
+            filter: invert(1);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1050;
+        }
+        
+        .progress {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .token-display {
+            background: var(--dark-bg);
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            color: var(--secondary-color);
+        }
+        
+        .instruction-list {
+            padding-left: 1.25rem;
+            color: var(--text-secondary);
+        }
+        
+        .instruction-list li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section" class="login-container">
+        <div class="login-card">
+            <div class="brand-logo">
+                <i class="bi bi-gear-wide-connected"></i>
+                <h1>HimCloud 管理後台</h1>
+            </div>
+            <form id="login-form">
+                <div class="mb-3">
+                    <label class="form-label">帳號</label>
+                    <input type="text" id="username" class="form-control" placeholder="請輸入帳號" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">密碼</label>
+                    <input type="password" id="password" class="form-control" placeholder="請輸入密碼" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>登入
+                </button>
+                <div id="login-error" class="text-danger text-center mt-3" style="font-size: 0.875rem;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Section -->
+    <div id="admin-section" style="display: none;">
+        <div class="main-container">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-brand">
+                    <i class="bi bi-gear-wide-connected"></i>
+                    <h2>HimCloud 管理後台</h2>
+                </div>
+                <div class="user-menu">
+                    <a href="/" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-cloud me-1"></i>網盤
+                    </a>
+                    <div class="user-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm" onclick="logout()">
+                        <i class="bi bi-box-arrow-left"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <i class="bi bi-hdd-stack"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="total-nodes">0</h4>
+                        <p>總節點數</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="online-nodes">0</h4>
+                        <p>線上節點</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="total-users">0</h4>
+                        <p>總用戶數</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <i class="bi bi-file-earmark"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4 id="total-files">0</h4>
+                        <p>總檔案數</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="nodes-tab" data-bs-toggle="tab" data-bs-target="#nodes-content" type="button" role="tab">
+                        <i class="bi bi-hdd-stack me-2"></i>節點管理
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-content" type="button" role="tab">
+                        <i class="bi bi-people me-2"></i>用戶管理
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files-content" type="button" role="tab">
+                        <i class="bi bi-folder me-2"></i>檔案管理
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="api-tokens-tab" data-bs-toggle="tab" data-bs-target="#api-tokens-content" type="button" role="tab">
+                        <i class="bi bi-key me-2"></i>開發者 API
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="adminTabContent">
+                <!-- Nodes Tab -->
+                <div class="tab-pane fade show active" id="nodes-content" role="tabpanel">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="bi bi-hdd-stack"></i>節點列表
+                            </h3>
+                            <button class="btn btn-primary" onclick="openAddNodeModal()">
+                                <i class="bi bi-plus-lg me-2"></i>新增節點
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>節點名稱</th>
+                                        <th>連線位置</th>
+                                        <th>狀態</th>
+                                        <th>容量</th>
+                                        <th>已用</th>
+                                        <th>使用率</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="nodes-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Tab -->
+                <div class="tab-pane fade" id="users-content" role="tabpanel">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="bi bi-people"></i>用戶列表
+                            </h3>
+                            <button class="btn btn-primary" onclick="openAddUserModal()">
+                                <i class="bi bi-plus-lg me-2"></i>新增用戶
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>帳號</th>
+                                        <th>角色</th>
+                                        <th>儲存配額</th>
+                                        <th>已用空間</th>
+                                        <th>建立時間</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Files Tab -->
+                <div class="tab-pane fade" id="files-content" role="tabpanel">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="bi bi-folder"></i>檔案列表
+                            </h3>
+                            <div class="d-flex gap-2">
+                                <select class="form-select" id="file-owner-filter" style="width: auto;" onchange="refreshFiles()">
+                                    <option value="id">擁有者: ID</option>
+                                    <option value="name">擁有者: 名稱</option>
+                                </select>
+                                <select class="form-select" id="file-node-filter" style="width: auto;" onchange="refreshFiles()">
+                                    <option value="">所有節點</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>檔案名稱</th>
+                                        <th>大小</th>
+                                        <th>節點</th>
+                                        <th>擁有者</th>
+                                        <th>上傳時間</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="files-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Tokens Tab -->
+                <div class="tab-pane fade" id="api-tokens-content" role="tabpanel">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="bi bi-key"></i>開發者 API Token
+                            </h3>
+                            <button class="btn btn-primary" onclick="openAddApiTokenModal()">
+                                <i class="bi bi-plus-lg me-2"></i>新增 Token
+                            </button>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>API Token 使用說明：</strong>開發者可以使用 API Token 存取 API，無需透過網頁登入。
+                            <br>在請求時請在 Header 中加入 <code>X-API-Token: your_token_here</code>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>名稱</th>
+                                        <th>Token</th>
+                                        <th>權限</th>
+                                        <th>狀態</th>
+                                        <th>建立時間</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="api-tokens-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Node Modal -->
+    <div class="modal fade" id="addNodeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-hdd-stack me-2"></i>新增節點</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">節點名稱</label>
+                        <input type="text" id="node-name" class="form-control" placeholder="輸入節點名稱">
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="mb-3">
+                                <label class="form-label">協議</label>
+                                <select id="node-protocol" class="form-select">
+                                    <option value="http">HTTP</option>
+                                    <option value="https">HTTPS</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="mb-3">
+                                <label class="form-label">連線位置</label>
+                                <input type="text" id="node-url" class="form-control" placeholder="如: node.example.com:5001">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">容量 (GB)</label>
+                                <input type="number" id="node-storage" class="form-control" placeholder="100" value="100">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">冗餘 (%)</label>
+                                <input type="number" id="node-redundancy" class="form-control" placeholder="0" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">單次傳輸最大 (MB)</label>
+                                <input type="number" id="node-max-file-size" class="form-control" placeholder="100" value="100">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label">心跳間隔 (秒)</label>
+                                <input type="number" id="node-heartbeat-interval" class="form-control" placeholder="30" value="30">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Panel 位址</label>
+                        <input type="text" id="node-panel-url" class="form-control" placeholder="http://localhost:5000" value="http://localhost:5000">
+                    </div>
+                    <div id="add-result"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="createNode()">建立</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Result Modal -->
+    <div class="modal fade" id="tokenResultModal" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-key me-2"></i>節點配置已生成</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>請妥善保存以下配置！</strong>此配置只會顯示一次，關閉視窗後將無法再次查看。
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">節點名稱</label>
+                        <div id="result-node-name" class="fw-bold"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Node 端配置檔案</label>
+                        <textarea class="token-display" id="result-config" rows="18" style="width: 100%; background: var(--dark-bg); border: 1px solid var(--secondary-color); border-radius: 8px; padding: 1rem; color: var(--secondary-color); font-family: 'Courier New', monospace; font-size: 0.875rem; resize: vertical;"></textarea>
+                        <button class="btn btn-outline-secondary btn-sm mt-2" onclick="copyConfig()">
+                            <i class="bi bi-clipboard me-1"></i>複製配置
+                        </button>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6><i class="bi bi-info-circle me-2"></i>設定說明</h6>
+                    <ol class="instruction-list mt-3">
+                        <li>將上方的配置內容完整複製</li>
+                        <li>貼到 Node 端的 <code>config.yml</code> 檔案中（覆蓋原有內容）</li>
+                        <li><strong>注意：</strong>請確保 <code>panel_url</code> 指向正確的 Panel 位址</li>
+                        <li>啟動 Node 服務，它會自動連接到 Panel</li>
+                        <li>連線成功後，節點狀態將會從「待設定」變為「線上」</li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="closeTokenModal()">我知道了，關閉視窗</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>新增用戶</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">帳號</label>
+                        <input type="text" id="new-username" class="form-control" placeholder="輸入帳號">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">密碼</label>
+                        <input type="password" id="new-password" class="form-control" placeholder="輸入密碼">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">角色</label>
+                        <select id="new-role" class="form-select">
+                            <option value="user">一般用戶</option>
+                            <option value="admin">管理員</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="createUser()">建立</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>編輯用戶</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit-user-id">
+                    
+                    <!-- 唯讀資訊 -->
+                    <div class="alert alert-secondary">
+                        <h6 class="alert-heading"><i class="bi bi-info-circle me-2"></i>用戶資訊 (唯讀)</h6>
+                        <hr>
+                        <div class="row">
+                            <div class="col-6 mb-2">
+                                <small class="text-muted">帳號 ID</small>
+                                <div id="edit-user-id-display" class="fw-bold"></div>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <small class="text-muted">建立時間</small>
+                                <div id="edit-created-at-display" class="fw-bold"></div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">已用空間</small>
+                                <div id="edit-storage-used-display" class="fw-bold"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 可編輯欄位 -->
+                    <div class="mb-3">
+                        <label class="form-label">帳號名稱</label>
+                        <input type="text" id="edit-username" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">密碼 (留空則不修改)</label>
+                        <input type="password" id="edit-password" class="form-control" placeholder="輸入新密碼">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">角色</label>
+                        <select id="edit-role" class="form-select">
+                            <option value="user">一般用戶</option>
+                            <option value="admin">管理員</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">儲存配額 (GB，0 為無限制)</label>
+                        <input type="number" id="edit-quota" class="form-control" placeholder="0" step="0.01">
+                        <small class="text-muted">例如: 10 = 10GB</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">允許使用的節點</label>
+                        <div id="edit-nodes-container" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem;">
+                            <div class="text-center text-secondary">載入中...</div>
+                        </div>
+                        <small class="text-muted">勾選用戶允許使用的節點，未勾選的節點不會顯示給該用戶</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveUser()">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add API Token Modal -->
+    <div class="modal fade" id="addApiTokenModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-key me-2"></i>新增 API Token</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">名稱</label>
+                        <input type="text" id="api-token-name" class="form-control" placeholder="輸入 Token 名稱">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">權限</label>
+                        <div id="permissions-container" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem;">
+                            <div class="text-center text-secondary">載入中...</div>
+                        </div>
+                        <small class="text-muted">勾選需要授權的權限</small>
+                    </div>
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="api-token-enabled" checked>
+                        <label class="form-check-label" for="api-token-enabled">啟用</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="createApiToken()">建立</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Token Result Modal -->
+    <div class="modal fade" id="apiTokenResultModal" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-key me-2"></i>API Token 已建立</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>請妥善保存以下 Token！</strong>此 Token 只會顯示一次，關閉視窗後將無法再次查看。
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Token 名稱</label>
+                        <div id="result-api-token-name" class="fw-bold"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">API Token</label>
+                        <textarea class="token-display" id="result-api-token" rows="3" style="width: 100%; background: var(--dark-bg); border: 1px solid var(--secondary-color); border-radius: 8px; padding: 1rem; color: var(--secondary-color); font-family: 'Courier New', monospace; font-size: 0.875rem; resize: vertical;" readonly></textarea>
+                        <button class="btn btn-outline-secondary btn-sm mt-2" onclick="copyApiToken()">
+                            <i class="bi bi-clipboard me-1"></i>複製 Token
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="closeApiTokenModal()">我知道了，關閉視窗</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const k = 1024;
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + units[i];
+        }
+        
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            container.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            setTimeout(() => toast.remove(), 5000);
+        }
+        
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/auth/check');
+                const data = await res.json();
+                if (data.logged_in && data.user.role === 'admin') {
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('admin-section').style.display = 'block';
+                    loadData();
+                }
+            } catch (e) {
+                console.error('Auth check failed:', e);
+            }
+        }
+        
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password})
+                });
+                const data = await res.json();
+                if (data.success && data.user.role === 'admin') {
+                    checkAuth();
+                } else {
+                    document.getElementById('login-error').textContent = data.error || '登入失敗';
+                }
+            } catch (e) {
+                document.getElementById('login-error').textContent = '登入失敗，請稍後再試';
+            }
+        });
+        
+        async function logout() {
+            await fetch('/api/auth/logout', {method: 'POST'});
+            location.reload();
+        }
+        
+        async function loadData() {
+            await Promise.all([refreshNodes(), refreshUsers(), refreshFiles()]);
+        }
+        
+        // 監聽 API Tokens tab 點擊，載入 API Tokens
+        document.getElementById('api-tokens-tab').addEventListener('shown.bs.tab', function () {
+            refreshApiTokens();
+        });
+        
+        async function refreshNodes() {
+            try {
+                const res = await fetch('/api/node/list');
+                const data = await res.json();
+                const nodes = Object.values(data.nodes);
+                
+                // Update stats
+                document.getElementById('total-nodes').textContent = nodes.length;
+                document.getElementById('online-nodes').textContent = nodes.filter(n => n.status === 'online').length;
+                
+                // Update table
+                const tbody = document.getElementById('nodes-tbody');
+                if (nodes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-secondary">尚無節點</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = nodes.map(node => {
+                    const percent = node.capacity ? Math.round((node.used / node.capacity) * 100) : 0;
+                    // 解析 connection_url 顯示協議
+                    let displayUrl = node.connection_url || '';
+                    if (displayUrl.startsWith('http://')) {
+                        displayUrl = 'HTTP ' + displayUrl.replace('http://', '');
+                    } else if (displayUrl.startsWith('https://')) {
+                        displayUrl = 'HTTPS ' + displayUrl.replace('https://', '');
+                    }
+                    return `
+                        <tr>
+                            <td><strong>${node.name}</strong></td>
+                            <td>${displayUrl || '-'}</td>
+                            <td><span class="status-badge ${node.status}">${node.status === 'online' ? '線上' : '離線'}</span></td>
+                            <td>${formatFileSize(node.capacity || 0)}</td>
+                            <td>${formatFileSize(node.used || 0)}</td>
+                            <td>
+                                <div class="progress" style="width: 100px;">
+                                    <div class="progress-bar" style="width: ${percent}%"></div>
+                                </div>
+                                <small class="text-secondary">${percent}%</small>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger action-btn" onclick="deleteNode('${node.id}')" title="刪除">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+                
+                // Update file filter
+                const filter = document.getElementById('file-node-filter');
+                const currentValue = filter.value;
+                filter.innerHTML = '<option value="">所有節點</option>' + 
+                    nodes.map(n => `<option value="${n.id}">${n.name}</option>`).join('');
+                filter.value = currentValue;
+            } catch (e) {
+                console.error('Load nodes failed:', e);
+            }
+        }
+        
+        async function refreshUsers() {
+            try {
+                const res = await fetch('/api/user/list');
+                const data = await res.json();
+                
+                document.getElementById('total-users').textContent = data.users.length;
+                
+                const tbody = document.getElementById('users-tbody');
+                if (data.users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary">尚無用戶</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = data.users.map(user => `
+                    <tr>
+                        <td><strong>${user.username}</strong></td>
+                        <td>${user.role === 'admin' ? '<span class="badge bg-primary">管理員</span>' : '<span class="badge bg-secondary">用戶</span>'}</td>
+                        <td>${formatFileSize(user.storage_quota || 0)}</td>
+                        <td>${formatFileSize(user.storage_used || 0)}</td>
+                        <td>${new Date(user.created_at * 1000).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary action-btn" onclick="openEditUserModal('${user.id}')" title="編輯">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger action-btn" onclick="deleteUser('${user.id}')" title="刪除">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error('Load users failed:', e);
+            }
+        }
+        
+        // 儲存所有檔案的資訊（包含 node_id）以便下載/預覽使用
+        let allFilesCache = [];
+        
+        async function refreshFiles() {
+            const nodeFilter = document.getElementById('file-node-filter').value;
+            const ownerFilter = document.getElementById('file-owner-filter').value;
+            
+            try {
+                // 獲取所有節點
+                const nodesRes = await fetch('/api/node/list');
+                const nodesData = await nodesRes.json();
+                const allNodes = nodesData.nodes || {};
+                
+                // 獲取用戶列表
+                const usersRes = await fetch('/api/user/list');
+                const usersData = await usersRes.json();
+                const userMap = {};
+                usersData.users.forEach(user => {
+                    userMap[user.id] = user.username;
+                });
+                
+                let allFiles = [];
+                
+                // 對每個在線節點獲取檔案列表
+                const nodePromises = [];
+                for (const [nodeId, nodeInfo] of Object.entries(allNodes)) {
+                    // 如果選擇了特定節點，只獲取該節點的檔案
+                    if (nodeFilter && nodeFilter !== nodeId) {
+                        continue;
+                    }
+                    
+                    // 只獲取在線節點的檔案
+                    if (nodeInfo.status !== 'online') {
+                        continue;
+                    }
+                    
+                    nodePromises.push(
+                        fetch(`/api/node/files?node_id=${nodeId}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success && data.files) {
+                                    return data.files.map(file => ({
+                                        ...file,
+                                        node_id: nodeId,
+                                        node_name: nodeInfo.name
+                                    }));
+                                }
+                                return [];
+                            })
+                            .catch(() => [])
+                    );
+                }
+                
+                const results = await Promise.all(nodePromises);
+                results.forEach(files => {
+                    allFiles = allFiles.concat(files);
+                });
+                
+                // 儲存到快取
+                allFilesCache = allFiles;
+                
+                document.getElementById('total-files').textContent = allFiles.length;
+                
+                const tbody = document.getElementById('files-tbody');
+                if (allFiles.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary">尚無檔案</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = allFiles.map(file => {
+                    const ownerDisplay = ownerFilter === 'name' 
+                        ? (userMap[file.user_id] || file.user_id) 
+                        : (file.user_id || 'unknown');
+                    
+                    // 檢查是否為圖片或 PDF
+                    const isPreviewable = /\.(jpg|jpeg|png|gif|bmp|webp|pdf)$/i.test(file.name);
+                    
+                    return `
+                        <tr>
+                            <td><i class="bi bi-file-earmark me-2"></i><strong>${file.name}</strong></td>
+                            <td>${formatFileSize(file.size)}</td>
+                            <td>${file.node_name || file.node_id}</td>
+                            <td>${ownerDisplay}</td>
+                            <td>${file.uploaded_at ? new Date(file.uploaded_at * 1000).toLocaleString() : '-'}</td>
+                            <td>
+                                ${isPreviewable ? `<button class="btn btn-sm btn-outline-info action-btn" onclick="previewNodeFile('${file.node_id}', '${encodeURIComponent(file.folder || '')}', '${encodeURIComponent(file.name)}')" title="預覽">
+                                    <i class="bi bi-eye"></i>
+                                </button>` : ''}
+                                <button class="btn btn-sm btn-outline-success action-btn" onclick="downloadFromNode('${file.id}')" title="下載">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger action-btn" onclick="deleteFileFromNode('${file.id}')" title="刪除">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error('Load files failed:', e);
+                document.getElementById('files-tbody').innerHTML = '<tr><td colspan="6" class="text-center text-secondary">載入失敗，請確保節點在線</td></tr>';
+            }
+        }
+        
+        // 從 Node 下載檔案
+        async function downloadFromNode(fileId) {
+            // 從快取中找到檔案的 node_id
+            const fileInfo = allFilesCache.find(f => f.id === fileId);
+            if (!fileInfo) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '下載失敗',
+                    text: '找不到檔案資訊'
+                });
+                return;
+            }
+            
+            const nodeId = fileInfo.node_id;
+            const folder = fileInfo.folder || '';
+            const fileName = fileInfo.name;
+            const filePath = folder ? `${folder}/${fileName}` : fileName;
+            
+            // 直接從 Node 下載
+            window.location.href = `/api/file/download/${fileId}?node_id=${nodeId}&from_node=true`;
+        }
+        
+        // 從 Node 刪除檔案
+        async function deleteFileFromNode(fileId) {
+            const result = await Swal.fire({
+                title: '確定要刪除這個檔案嗎？',
+                text: "此操作無法復原",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                // 透過 Panel API 刪除檔案（Panel 會處理 Node 的刪除）
+                const res = await fetch('/api/file/' + fileId, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已刪除',
+                        text: '檔案已成功刪除',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    // 刷新列表
+                    refreshFiles();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: data.error || '無法刪除檔案'
+                    });
+                }
+            } catch (e) {
+                console.error('Delete failed:', e);
+                Swal.fire({
+                    icon: 'error',
+                    title: '刪除失敗',
+                    text: '無法連接到伺服器'
+                });
+            }
+        }
+        
+        async function previewNodeFile(nodeId, folder, fileName) {
+            folder = decodeURIComponent(folder);
+            fileName = decodeURIComponent(fileName);
+            
+            const filePath = folder ? `${folder}/${fileName}` : fileName;
+            
+            // 顯示載入中
+            Swal.fire({
+                title: '載入中...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            try {
+                const response = await fetch(`/api/file/preview/${encodeURIComponent(filePath)}?node_id=${nodeId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    
+                    if (contentType && contentType.startsWith('image/')) {
+                        // 顯示圖片 - 讀取為 blob
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        
+                        Swal.fire({
+                            imageUrl: url,
+                            imageAlt: fileName,
+                            width: '80%',
+                            confirmButtonText: '關閉'
+                        });
+                    } else if (contentType === 'application/pdf') {
+                        // 顯示 PDF - 讀取為 blob
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        
+                        Swal.fire({
+                            html: `<iframe src="${url}" style="width: 100%; height: 80vh; border: none;"></iframe>`,
+                            width: '90%',
+                            confirmButtonText: '關閉'
+                        });
+                    } else {
+                        const data = await response.json();
+                        Swal.fire({
+                            icon: 'error',
+                            title: '預覽失敗',
+                            text: data.error || '不支援預覽此類型檔案'
+                        });
+                    }
+                } else {
+                    const data = await response.json();
+                    Swal.fire({
+                        icon: 'error',
+                        title: '預覽失敗',
+                        text: data.error || '無法預覽此檔案'
+                    });
+                }
+            } catch (e) {
+                console.error('Preview error:', e);
+                Swal.fire({
+                    icon: 'error',
+                    title: '預覽失敗',
+                    text: '無法連接到節點或發生錯誤'
+                });
+            }
+        }
+        
+        function openAddNodeModal() {
+            document.getElementById('add-result').innerHTML = '';
+            new bootstrap.Modal(document.getElementById('addNodeModal')).show();
+        }
+        
+        async function createNode() {
+            const name = document.getElementById('node-name').value;
+            const storage = (parseFloat(document.getElementById('node-storage').value) || 0) * 1024 * 1024 * 1024;
+            const redundancy = parseFloat(document.getElementById('node-redundancy').value) || 0;
+            const maxFileSize = (parseFloat(document.getElementById('node-max-file-size').value) || 100) * 1024 * 1024;
+            const heartbeatInterval = parseInt(document.getElementById('node-heartbeat-interval').value) || 30;
+            const panelUrl = document.getElementById('node-panel-url').value;
+            const protocol = document.getElementById('node-protocol').value;
+            const url = document.getElementById('node-url').value;
+            const connection_url = url ? `${protocol}://${url}` : '';
+            
+            try {
+                const res = await fetch('/api/node/config', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        name, 
+                        storage_limit: storage, 
+                        redundancy, 
+                        connection_url: connection_url,
+                        max_file_size: maxFileSize,
+                        heartbeat_interval: heartbeatInterval,
+                        panel_url: panelUrl
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    // 關閉新增節點 Modal
+                    bootstrap.Modal.getInstance(document.getElementById('addNodeModal')).hide();
+                    
+                    // 顯示 Token 結果 Modal
+                    document.getElementById('result-node-name').textContent = name;
+                    document.getElementById('result-config').value = data.config_content;
+                    new bootstrap.Modal(document.getElementById('tokenResultModal')).show();
+                    
+                    // 刷新節點列表
+                    refreshNodes();
+                } else {
+                    document.getElementById('add-result').innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                }
+            } catch (e) {
+                document.getElementById('add-result').innerHTML = `<div class="alert alert-danger">建立失敗</div>`;
+            }
+        }
+        
+        function copyConfig() {
+            const config = document.getElementById('result-config').value;
+            navigator.clipboard.writeText(config).then(() => {
+                showToast('配置已複製到剪貼簿', 'success');
+            });
+        }
+        
+        function closeTokenModal() {
+            bootstrap.Modal.getInstance(document.getElementById('tokenResultModal')).hide();
+        }
+        
+        function openAddUserModal() {
+            // Clear form
+            document.getElementById('new-username').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('new-role').value = 'user';
+            new bootstrap.Modal(document.getElementById('addUserModal')).show();
+        }
+        
+        function openEditUserModal(userId) {
+            // First, fetch nodes list
+            fetch('/api/node/list')
+                .then(res => res.json())
+                .then(nodesData => {
+                    const nodes = Object.values(nodesData.nodes);
+                    
+                    // Then fetch user data
+                    return fetch('/api/user/' + userId)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                const user = data.user;
+                                // Convert quota from bytes to GB for display
+                                const quotaGB = user.storage_quota ? (user.storage_quota / (1024 * 1024 * 1024)).toFixed(2) : 0;
+                                document.getElementById('edit-user-id').value = user.id;
+                                document.getElementById('edit-username').value = user.username;
+                                document.getElementById('edit-role').value = user.role;
+                                document.getElementById('edit-quota').value = quotaGB;
+                                document.getElementById('edit-password').value = '';
+                                
+                                // Show user info (read-only)
+                                document.getElementById('edit-user-id-display').textContent = user.id;
+                                document.getElementById('edit-created-at-display').textContent = new Date(user.created_at * 1000).toLocaleString();
+                                document.getElementById('edit-storage-used-display').textContent = formatFileSize(user.storage_used || 0);
+                                
+                                // Build nodes checkboxes
+                                const nodesContainer = document.getElementById('edit-nodes-container');
+                                const allowedNodes = user.allowed_nodes || [];
+                                
+                                if (nodes.length === 0) {
+                                    nodesContainer.innerHTML = '<div class="text-secondary">尚無節點</div>';
+                                } else {
+                                    nodesContainer.innerHTML = nodes.map(node => {
+                                        // 預設不選取，需要管理員手動設定
+                                        const isChecked = allowedNodes.includes(node.id);
+                                        return `
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="${node.id}" id="node-${node.id}" ${isChecked ? 'checked' : ''}>
+                                                <label class="form-check-label" for="node-${node.id}">
+                                                    ${node.name} <small class="text-secondary">(${node.status === 'online' ? '線上' : '離線'})</small>
+                                                </label>
+                                            </div>
+                                        `;
+                                    }).join('');
+                                }
+                                
+                                new bootstrap.Modal(document.getElementById('editUserModal')).show();
+                            } else {
+                                showToast(data.error || '獲取用戶資料失敗', 'error');
+                            }
+                        });
+                })
+                .catch(err => {
+                    showToast('獲取用戶資料失敗', 'error');
+                });
+        }
+        
+        function saveUser() {
+            const userId = document.getElementById('edit-user-id').value;
+            const username = document.getElementById('edit-username').value;
+            const password = document.getElementById('edit-password').value;
+            const role = document.getElementById('edit-role').value;
+            const quotaGB = parseFloat(document.getElementById('edit-quota').value) || 0;
+            const quotaBytes = Math.round(quotaGB * 1024 * 1024 * 1024);
+            
+            // Get selected nodes
+            const nodesContainer = document.getElementById('edit-nodes-container');
+            const checkboxes = nodesContainer.querySelectorAll('input[type="checkbox"]:checked');
+            const allowedNodes = Array.from(checkboxes).map(cb => cb.value);
+            
+            fetch('/api/user/' + userId, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                    role: role,
+                    storage_quota: quotaBytes,
+                    allowed_nodes: allowedNodes
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('用戶資料已更新', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+                    refreshUsers();
+                } else {
+                    showToast(data.error || '更新失敗', 'error');
+                }
+            })
+            .catch(err => {
+                showToast('更新失敗', 'error');
+            });
+        }
+        
+        async function createUser() {
+            const username = document.getElementById('new-username').value;
+            const password = document.getElementById('new-password').value;
+            const role = document.getElementById('new-role').value;
+            
+            try {
+                const res = await fetch('/api/user/create', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password, role})
+                });
+                
+                if (res.ok) {
+                    showToast('用戶建立成功', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+                    refreshUsers();
+                } else {
+                    const data = await res.json();
+                    showToast(data.error || '建立失敗', 'error');
+                }
+            } catch (e) {
+                showToast('建立失敗', 'error');
+            }
+        }
+        
+        async function deleteNode(id) {
+            const result = await Swal.fire({
+                title: '確定要刪除這個節點嗎？',
+                text: "此操作無法復原",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch('/api/node/' + id, {method: 'DELETE'});
+                const data = await res.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已刪除',
+                        text: '節點已成功刪除',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    refreshNodes();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: data.error || '發生錯誤'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '刪除失敗',
+                    text: '發生錯誤'
+                });
+            }
+        }
+        
+        async function deleteUser(id) {
+            const result = await Swal.fire({
+                title: '確定要刪除這個用戶嗎？',
+                text: "此操作無法復原",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch('/api/user/' + id, {method: 'DELETE'});
+                const data = await res.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已刪除',
+                        text: '用戶已成功刪除',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    refreshUsers();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: data.error || '發生錯誤'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '刪除失敗',
+                    text: '發生錯誤'
+                });
+            }
+        }
+        
+        async function deleteFile(id) {
+            const result = await Swal.fire({
+                title: '確定要刪除這個檔案嗎？',
+                text: "此操作無法復原",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch('/api/file/' + id, {method: 'DELETE'});
+                const data = await res.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已刪除',
+                        text: '檔案已成功刪除',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    refreshFiles();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: data.error || '發生錯誤'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '刪除失敗',
+                    text: '發生錯誤'
+                });
+            }
+        }
+        
+        // SSE for real-time node updates
+        const eventSource = new EventSource('/api/node/stream');
+        eventSource.onmessage = function(e) {
+            refreshNodes();
+        };
+        
+        // ==================== API Token Functions ====================
+        
+        async function refreshApiTokens() {
+            try {
+                const res = await fetch('/api/dev/token/list');
+                const data = await res.json();
+                
+                const tbody = document.getElementById('api-tokens-tbody');
+                const tokens = Object.values(data.tokens);
+                
+                if (tokens.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary">尚無 API Token</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = tokens.map(token => {
+                    const permissions = token.permissions || [];
+                    const permissionsDisplay = permissions.length > 0 
+                        ? permissions.map(p => `<span class="badge bg-secondary me-1">${p}</span>`).join('')
+                        : '<span class="text-secondary">無權限</span>';
+                    
+                    return `
+                        <tr>
+                            <td><strong>${token.name}</strong></td>
+                            <td><code style="font-size: 0.75rem;">${token.token.substring(0, 16)}...</code></td>
+                            <td>${permissionsDisplay}</td>
+                            <td>${token.enabled 
+                                ? '<span class="badge bg-success">啟用</span>' 
+                                : '<span class="badge bg-secondary">停用</span>'}</td>
+                            <td>${new Date(token.created_at * 1000).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary action-btn" onclick="editApiToken('${token.id}')" title="編輯">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning action-btn" onclick="regenerateApiToken('${token.id}')" title="重新產生">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger action-btn" onclick="deleteApiToken('${token.id}')" title="刪除">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error('Load API tokens failed:', e);
+            }
+        }
+        
+        async function openAddApiTokenModal() {
+            // Clear form
+            document.getElementById('api-token-name').value = '';
+            document.getElementById('api-token-enabled').checked = true;
+            
+            // Fetch permissions
+            try {
+                const res = await fetch('/api/dev/permissions');
+                const data = await res.json();
+                
+                const container = document.getElementById('permissions-container');
+                const permissions = data.permissions || {};
+                
+                container.innerHTML = Object.entries(permissions).map(([key, value]) => `
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${key}" id="perm-${key}">
+                        <label class="form-check-label" for="perm-${key}">
+                            ${value}
+                        </label>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Load permissions failed:', e);
+            }
+            
+            new bootstrap.Modal(document.getElementById('addApiTokenModal')).show();
+        }
+        
+        async function createApiToken() {
+            const name = document.getElementById('api-token-name').value;
+            if (!name) {
+                showToast('請輸入 Token 名稱', 'error');
+                return;
+            }
+            
+            // Get selected permissions
+            const container = document.getElementById('permissions-container');
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+            const permissions = Array.from(checkboxes).map(cb => cb.value);
+            
+            const enabled = document.getElementById('api-token-enabled').checked;
+            
+            try {
+                const res = await fetch('/api/dev/token/create', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        name: name,
+                        permissions: permissions,
+                        enabled: enabled
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    // 關閉新增 Modal
+                    bootstrap.Modal.getInstance(document.getElementById('addApiTokenModal')).hide();
+                    
+                    // 顯示 Token 結果 Modal
+                    document.getElementById('result-api-token-name').textContent = data.name;
+                    document.getElementById('result-api-token').value = data.token;
+                    new bootstrap.Modal(document.getElementById('apiTokenResultModal')).show();
+                    
+                    // 刷新列表
+                    refreshApiTokens();
+                } else {
+                    showToast(data.error || '建立失敗', 'error');
+                }
+            } catch (e) {
+                showToast('建立失敗', 'error');
+            }
+        }
+        
+        function copyApiToken() {
+            const token = document.getElementById('result-api-token').value;
+            navigator.clipboard.writeText(token).then(() => {
+                showToast('Token 已複製到剪貼簿', 'success');
+            });
+        }
+        
+        function closeApiTokenModal() {
+            bootstrap.Modal.getInstance(document.getElementById('apiTokenResultModal')).hide();
+        }
+        
+        async function editApiToken(tokenId) {
+            try {
+                const res = await fetch('/api/dev/token/list');
+                const data = await res.json();
+                const token = data.tokens[tokenId];
+                
+                if (!token) {
+                    showToast('Token 不存在', 'error');
+                    return;
+                }
+                
+                // Fetch permissions for the form
+                const permRes = await fetch('/api/dev/permissions');
+                const permData = await permRes.json();
+                const permissions = permData.permissions || {};
+                
+                const container = document.getElementById('permissions-container');
+                container.innerHTML = Object.entries(permissions).map(([key, value]) => {
+                    const isChecked = (token.permissions || []).includes(key);
+                    return `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${key}" id="edit-perm-${key}" ${isChecked ? 'checked' : ''}>
+                            <label class="form-check-label" for="edit-perm-${key}">
+                                ${value}
+                            </label>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Store token ID for editing
+                window.editingApiTokenId = tokenId;
+                
+                // Show modal with current values
+                document.getElementById('api-token-name').value = token.name;
+                document.getElementById('api-token-enabled').checked = token.enabled;
+                
+                // Change modal to edit mode
+                document.querySelector('#addApiTokenModal .modal-title').innerHTML = '<i class="bi bi-pencil-square me-2"></i>編輯 API Token';
+                document.querySelector('#addApiTokenModal .btn-primary').textContent = '儲存';
+                document.querySelector('#addApiTokenModal .btn-primary').onclick = saveApiToken;
+                
+                new bootstrap.Modal(document.getElementById('addApiTokenModal')).show();
+            } catch (e) {
+                showToast('載入失敗', 'error');
+            }
+        }
+        
+        async function saveApiToken() {
+            const tokenId = window.editingApiTokenId;
+            if (!tokenId) return;
+            
+            const name = document.getElementById('api-token-name').value;
+            if (!name) {
+                showToast('請輸入 Token 名稱', 'error');
+                return;
+            }
+            
+            // Get selected permissions
+            const container = document.getElementById('permissions-container');
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+            const permissions = Array.from(checkboxes).map(cb => cb.value);
+            
+            const enabled = document.getElementById('api-token-enabled').checked;
+            
+            try {
+                const res = await fetch('/api/dev/token/' + tokenId, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        name: name,
+                        permissions: permissions,
+                        enabled: enabled
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('Token 已更新', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('addApiTokenModal')).hide();
+                    
+                    // Reset modal to add mode
+                    document.querySelector('#addApiTokenModal .modal-title').innerHTML = '<i class="bi bi-key me-2"></i>新增 API Token';
+                    document.querySelector('#addApiTokenModal .btn-primary').textContent = '建立';
+                    document.querySelector('#addApiTokenModal .btn-primary').onclick = createApiToken;
+                    
+                    refreshApiTokens();
+                } else {
+                    showToast(data.error || '更新失敗', 'error');
+                }
+            } catch (e) {
+                showToast('更新失敗', 'error');
+            }
+        }
+        
+        async function regenerateApiToken(tokenId) {
+            const result = await Swal.fire({
+                title: '確定要重新產生這個 Token 嗎？',
+                text: "舊的 Token 將失效，無法復原",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f59e0b',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定重新產生',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch('/api/dev/token/' + tokenId + '/regenerate', {
+                    method: 'POST'
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    // Show new token
+                    document.getElementById('result-api-token-name').textContent = 'Token 已重新產生';
+                    document.getElementById('result-api-token').value = data.token;
+                    new bootstrap.Modal(document.getElementById('apiTokenResultModal')).show();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '重新產生失敗',
+                        text: data.error || '發生錯誤'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '重新產生失敗',
+                    text: '發生錯誤'
+                });
+            }
+        }
+        
+        async function deleteApiToken(tokenId) {
+            const result = await Swal.fire({
+                title: '確定要刪除這個 API Token 嗎？',
+                text: "此操作無法復原",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch('/api/dev/token/' + tokenId, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已刪除',
+                        text: 'API Token 已成功刪除',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    refreshApiTokens();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: data.error || '發生錯誤'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '刪除失敗',
+                    text: '發生錯誤'
+                });
+            }
+        }
+        
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>

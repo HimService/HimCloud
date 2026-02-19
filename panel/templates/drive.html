@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HimCloud 網盤</title>
+    <!-- Favicon -->
+    <link rel="icon" href="/icon.png" type="image/png">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d9488;
+            --secondary-color: #14b8a6;
+            --accent-color: #2dd4bf;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+        
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(20, 184, 166, 0.05) 100%);
+        }
+        
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .brand-logo i {
+            font-size: 3.5rem;
+            color: var(--secondary-color);
+            text-shadow: 0 0 30px rgba(20, 184, 166, 0.5);
+        }
+        
+        .brand-logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-control {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            background: var(--dark-bg);
+            border-color: var(--secondary-color);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(13, 148, 136, 0.3);
+        }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        .header {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .header-brand i {
+            font-size: 1.75rem;
+            color: var(--secondary-color);
+        }
+        
+        .header-brand h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .sidebar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+        
+        .sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        
+        .node-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .node-item {
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .node-item:hover {
+            background: rgba(20, 184, 166, 0.15);
+            border-color: var(--secondary-color);
+        }
+        
+        .node-item.active {
+            background: rgba(20, 184, 166, 0.25);
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.2);
+        }
+        
+        .node-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 2px solid currentColor;
+        }
+        
+        .node-status.online {
+            background: #22c55e;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+            border-color: #22c55e;
+        }
+        
+        .node-status.offline {
+            background: #6b7280;
+            border-color: #6b7280;
+        }
+        
+        .main-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--secondary-color);
+            background: rgba(20, 184, 166, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--secondary-color);
+            background: rgba(20, 184, 166, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .file-card {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.2s ease;
+            cursor: grab;
+        }
+        
+        .file-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--secondary-color);
+        }
+        
+        .file-card.dragging {
+            opacity: 0.5;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.5);
+        }
+        
+        .folder-drop-zone {
+            border: 2px dashed var(--secondary-color);
+            background: rgba(20, 184, 166, 0.1);
+        }
+        
+        .file-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.75rem;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1050;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .progress-bar.active {
+            display: block;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+        
+        .storage-card {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.15), rgba(20, 184, 166, 0.1));
+            border: 1px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .storage-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .storage-card-header i {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .storage-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .storage-card-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .storage-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .storage-stat-value {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .storage-bar {
+            height: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 0.75rem;
+        }
+        
+        .storage-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .storage-info {
+            display: none;
+        }
+        
+        /* 多選樣式 */
+        .file-card.selected {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.5);
+            background: rgba(20, 184, 166, 0.15);
+        }
+        
+        .file-checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--secondary-color);
+        }
+        
+        .file-card {
+            position: relative;
+        }
+        
+        /* 批量操作工具欄 */
+        .batch-actions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: none;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .batch-actions.show {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .batch-count {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section" class="login-container">
+        <div class="login-card">
+            <div class="brand-logo">
+                <i class="bi bi-cloud-fill"></i>
+                <h1>HimCloud 網盤</h1>
+            </div>
+            <form id="login-form">
+                <div class="mb-3">
+                    <label class="form-label">帳號</label>
+                    <input type="text" id="username" class="form-control" placeholder="請輸入帳號" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">密碼</label>
+                    <input type="password" id="password" class="form-control" placeholder="請輸入密碼" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>登入
+                </button>
+                <div id="login-error" class="text-danger text-center mt-3" style="font-size: 0.875rem;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Drive Section -->
+    <div id="drive-section" style="display: none;">
+        <div class="main-container">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-brand">
+                    <i class="bi bi-cloud-fill"></i>
+                    <h2>HimCloud 網盤</h2>
+                </div>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <span id="user-name"></span>
+                    </div>
+                    <a href="/admin" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-gear me-1"></i>管理後台
+                    </a>
+                    <button class="btn btn-outline-danger btn-sm" onclick="logout()">
+                        <i class="bi bi-box-arrow-left"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-grid">
+                <!-- Sidebar - Node Selection -->
+                <aside class="sidebar">
+                    <div class="sidebar-title">
+                        <i class="bi bi-hdd-stack me-2"></i>選擇儲存節點
+                    </div>
+                    <ul class="node-list" id="node-list">
+                        <!-- Nodes will be loaded here -->
+                    </ul>
+                    
+                    <div class="storage-info mt-4" id="storage-info" style="display: none;">
+                        <div class="storage-label">
+                            <i class="bi bi-pie-chart me-1"></i>儲存空間
+                        </div>
+                        <div class="storage-bar">
+                            <div class="storage-bar-fill" id="storage-bar-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2" style="font-size: 0.75rem; color: var(--text-secondary);">
+                            <span id="storage-used">0 GB</span>
+                            <span id="storage-total">0 GB</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <!-- Storage Card -->
+                    <div id="storage-card" style="display: none;">
+                        <div class="storage-card">
+                            <div class="storage-card-header">
+                                <i class="bi bi-pie-chart-fill"></i>
+                                <div>
+                                    <div class="storage-card-title">儲存空間使用情況</div>
+                                    <div class="storage-card-subtitle" id="storage-card-subtitle">節點容量</div>
+                                </div>
+                            </div>
+                            <div class="storage-stat">
+                                <span>已使用</span>
+                                <span class="storage-stat-value" id="storage-card-used">0 GB</span>
+                            </div>
+                            <div class="storage-stat">
+                                <span>可用空間</span>
+                                <span class="storage-stat-value" id="storage-card-available">0 GB</span>
+                            </div>
+                            <div class="storage-bar">
+                                <div class="storage-bar-fill" id="storage-card-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Section -->
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="bi bi-cloud-upload"></i>上傳檔案
+                        </h3>
+                    </div>
+                    
+                    <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+                        <input type="file" id="file-input" style="display: none;" multiple>
+                        <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                        <p class="mb-2">點擊或拖曳檔案到此處上傳</p>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary);">
+                            <i class="bi bi-info-circle me-1"></i>支援所有檔案類型
+                        </p>
+                        <div class="progress-bar" id="upload-progress">
+                            <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- File List -->
+                    <div class="section-header mt-4">
+                        <h3 class="section-title">
+                            <i class="bi bi-folder-fill"></i>我的檔案
+                        </h3>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-light" onclick="showCreateFolderModal()">
+                                <i class="bi bi-folder-plus"></i> 新增資料夾
+                            </button>
+                            <button class="btn btn-sm btn-outline-light" onclick="refreshFiles()">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Breadcrumb -->
+                    <nav id="breadcrumb" class="mb-3" style="display: none;">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="#" onclick="navigateToFolder(''); return false;" style="color: var(--secondary-color);">
+                                    <i class="bi bi-house"></i> 根目錄
+                                </a>
+                            </li>
+                        </ol>
+                    </nav>
+                    
+                    <div id="files-container">
+                        <div class="empty-state" id="empty-state">
+                            <i class="bi bi-folder2-open"></i>
+                            <p>請先選擇儲存節點</p>
+                        </div>
+                        <div class="file-grid" id="file-grid" style="display: none;"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- 批量操作工具欄 -->
+    <div class="batch-actions" id="batch-actions">
+        <span class="batch-count" id="batch-count">已選取 0 個檔案</span>
+        <button class="btn btn-sm btn-outline-success" onclick="batchDownload()">
+            <i class="bi bi-download me-1"></i>下載
+        </button>
+        <button class="btn btn-sm btn-outline-primary" onclick="showBatchMoveDialog()">
+            <i class="bi bi-folder2 me-1"></i>移動
+        </button>
+        <button class="btn btn-sm btn-outline-danger" onclick="batchDelete()">
+            <i class="bi bi-trash me-1"></i>刪除
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="clearSelection()">
+            <i class="bi bi-x-lg me-1"></i>取消
+        </button>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let currentNodeId = null;
+        let currentUser = null;
+        
+        // 多選功能
+        let selectedFiles = new Set();
+        let lastSelectedIndex = -1;
+        let currentFilesList = []; // 當前顯示的檔案列表（用於 Shift 選擇）
+        
+        // 清除選取
+        function clearSelection() {
+            selectedFiles.clear();
+            lastSelectedIndex = -1;
+            document.querySelectorAll('.file-card').forEach(card => {
+                card.classList.remove('selected');
+                const checkbox = card.querySelector('.file-checkbox');
+                if (checkbox) checkbox.checked = false;
+            });
+            updateBatchActions();
+        }
+        
+        // 更新批量操作工具欄
+        function updateBatchActions() {
+            const batchActions = document.getElementById('batch-actions');
+            const batchCount = document.getElementById('batch-count');
+            
+            if (selectedFiles.size > 0) {
+                batchActions.classList.add('show');
+                batchCount.textContent = `已選取 ${selectedFiles.size} 個檔案`;
+            } else {
+                batchActions.classList.remove('show');
+            }
+        }
+        
+        // 處理檔案點擊（支援 Shift 多選）
+        function handleFileClick(fileId, index, event) {
+            const fileCards = Array.from(document.querySelectorAll('.file-card[data-file-id]'));
+            const card = fileCards[index];
+            
+            if (event.shiftKey && lastSelectedIndex !== -1) {
+                // Shift 鍵多選
+                const start = Math.min(lastSelectedIndex, index);
+                const end = Math.max(lastSelectedIndex, index);
+                
+                // 如果按住 Shift 且有按 Ctrl，則切換範圍內的選擇狀態
+                // 否則先清除其他選擇，只選擇範圍內的
+                if (!event.ctrlKey && !event.metaKey) {
+                    // 清除之前的選擇（但保留當前點擊的）
+                    fileCards.forEach((c, i) => {
+                        if (i < start || i > end) {
+                            const id = c.dataset.fileId;
+                            if (id) {
+                                selectedFiles.delete(id);
+                                c.classList.remove('selected');
+                                const checkbox = c.querySelector('.file-checkbox');
+                                if (checkbox) checkbox.checked = false;
+                            }
+                        }
+                    });
+                }
+                
+                // 選擇範圍內的所有檔案
+                for (let i = start; i <= end; i++) {
+                    const c = fileCards[i];
+                    const id = c.dataset.fileId;
+                    if (id) {
+                        if (event.ctrlKey || event.metaKey) {
+                            // Ctrl/Meta 鍵：切換選擇狀態
+                            if (selectedFiles.has(id)) {
+                                selectedFiles.delete(id);
+                                c.classList.remove('selected');
+                            } else {
+                                selectedFiles.add(id);
+                                c.classList.add('selected');
+                            }
+                        } else {
+                            // 普通 Shift 點擊：添加到選擇
+                            selectedFiles.add(id);
+                            c.classList.add('selected');
+                        }
+                        const checkbox = c.querySelector('.file-checkbox');
+                        if (checkbox) checkbox.checked = selectedFiles.has(id);
+                    }
+                }
+            } else if (event.ctrlKey || event.metaKey) {
+                // Ctrl/Meta 鍵：切換單個檔案的選擇狀態
+                if (selectedFiles.has(fileId)) {
+                    selectedFiles.delete(fileId);
+                    card.classList.remove('selected');
+                } else {
+                    selectedFiles.add(fileId);
+                    card.classList.add('selected');
+                }
+                const checkbox = card.querySelector('.file-checkbox');
+                if (checkbox) checkbox.checked = selectedFiles.has(fileId);
+            } else {
+                // 普通點擊：清除其他選擇，只選這個
+                fileCards.forEach(c => {
+                    const id = c.dataset.fileId;
+                    if (id && id !== fileId) {
+                        selectedFiles.delete(id);
+                        c.classList.remove('selected');
+                        const checkbox = c.querySelector('.file-checkbox');
+                        if (checkbox) checkbox.checked = false;
+                    }
+                });
+                selectedFiles.add(fileId);
+                card.classList.add('selected');
+                const checkbox = card.querySelector('.file-checkbox');
+                if (checkbox) checkbox.checked = true;
+            }
+            
+            lastSelectedIndex = index;
+            updateBatchActions();
+        }
+        
+        // 批量刪除
+        async function batchDelete() {
+            if (selectedFiles.size === 0) return;
+            
+            const result = await Swal.fire({
+                title: '確定要刪除選取的檔案嗎？',
+                text: `即將刪除 ${selectedFiles.size} 個檔案，此操作無法復原`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const fileId of selectedFiles) {
+                try {
+                    const res = await fetch('/api/file/' + fileId, {method: 'DELETE'});
+                    const data = await res.json();
+                    if (data.success) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (e) {
+                    failCount++;
+                }
+            }
+            
+            clearSelection();
+            refreshFiles();
+            loadNodes();
+            
+            if (failCount === 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '刪除完成',
+                    text: `成功刪除 ${successCount} 個檔案`,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '刪除完成',
+                    text: `成功刪除 ${successCount} 個檔案，${failCount} 個失敗`
+                });
+            }
+        }
+        
+        // 批量下載
+        function batchDownload() {
+            if (selectedFiles.size === 0) return;
+            
+            const fileIds = Array.from(selectedFiles);
+            let index = 0;
+            
+            // 檢查是否有彈出視窗被阻止
+            let popupBlocked = false;
+            
+            // 嘗試開啟第一個視窗來檢測
+            const testWindow = window.open('about:blank', '_blank');
+            if (!testWindow || testWindow.closed || typeof testWindow.closed === 'undefined') {
+                popupBlocked = true;
+            } else {
+                testWindow.close();
+            }
+            
+            if (popupBlocked) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '彈出視窗被阻止',
+                    text: '請允許彈出視窗以下載檔案'
+                });
+                return;
+            }
+            
+            // 逐個開啟下載視窗（使用延遲避免被阻擋）
+            function downloadNext() {
+                if (index < fileIds.length) {
+                    const fileId = fileIds[index];
+                    const newWindow = window.open('/api/file/download/' + fileId, '_blank');
+                    if (!newWindow || newWindow.closed) {
+                        // 如果無法開啟新視窗，嘗試使用 iframe
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = '/api/file/download/' + fileId;
+                        document.body.appendChild(iframe);
+                        setTimeout(() => document.body.removeChild(iframe), 5000);
+                    }
+                    index++;
+                    // 延遲開啟下一個
+                    setTimeout(downloadNext, 300);
+                } else {
+                    // 全部下載完成後清除選取
+                    clearSelection();
+                }
+            }
+            
+            downloadNext();
+        }
+        
+        // 顯示批量移動對話框
+        async function showBatchMoveDialog() {
+            if (selectedFiles.size === 0) return;
+            
+            // 構建資料夾選項HTML（包含所有層級）
+            const folderOptions = await buildAllFolderOptions();
+            
+            const { value: targetPath } = await Swal.fire({
+                title: '批量移動檔案',
+                html: `
+                    <div style="text-align: left; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">
+                            已選取 <strong>${selectedFiles.size}</strong> 個檔案
+                        </p>
+                        <label style="display: block; margin-bottom: 5px;">選擇目標資料夾：</label>
+                        <select id="move-target-folder" class="form-control" style="width: 100%;">
+                            <option value="">📁 根目錄</option>
+                            ${folderOptions}
+                        </select>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '移動',
+                cancelButtonText: '取消',
+                preConfirm: () => {
+                    return document.getElementById('move-target-folder').value;
+                }
+            });
+            
+            if (targetPath !== undefined) {
+                await batchMove(targetPath);
+            }
+        }
+        
+        // 遞迴構建所有層級的資料夾選項
+        async function buildAllFolderOptions(parentPath = '', level = 0) {
+            let html = '';
+            const indent = '│ '.repeat(level);
+            const prefix = level > 0 ? '├─ ' : '';
+            
+            try {
+                const res = await fetch(`/api/folder/list?node_id=${currentNodeId}&path=${encodeURIComponent(parentPath)}`);
+                const data = await res.json();
+                const folders = data.folders || [];
+                
+                for (const folder of folders) {
+                    // 排除當前路徑下的資料夾（不能移動到自己）
+                    if (folder.path === currentPath) continue;
+                    
+                    html += `<option value="${folder.path}">${indent}${prefix}📁 ${folder.name}</option>`;
+                    
+                    // 遞迴獲取子資料夾
+                    html += await buildAllFolderOptions(folder.path, level + 1);
+                }
+            } catch (e) {
+                console.error('Load folders failed:', e);
+            }
+            
+            return html;
+        }
+        
+        // 批量移動
+        async function batchMove(targetFolder) {
+            if (selectedFiles.size === 0) return;
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const fileId of selectedFiles) {
+                try {
+                    const res = await fetch('/api/file/move', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            node_id: currentNodeId,
+                            file_id: fileId,
+                            target_folder: targetFolder
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (e) {
+                    failCount++;
+                }
+            }
+            
+            clearSelection();
+            refreshFiles();
+            
+            if (failCount === 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '移動完成',
+                    text: `成功移動 ${successCount} 個檔案`,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '移動完成',
+                    text: `成功移動 ${successCount} 個檔案，${failCount} 個失敗`
+                });
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const k = 1024;
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + units[i];
+        }
+        
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                'pdf': 'bi-file-earmark-pdf',
+                'doc': 'bi-file-earmark-word',
+                'docx': 'bi-file-earmark-word',
+                'xls': 'bi-file-earmark-excel',
+                'xlsx': 'bi-file-earmark-excel',
+                'ppt': 'bi-file-earmark-ppt',
+                'pptx': 'bi-file-earmark-ppt',
+                'jpg': 'bi-file-earmark-image',
+                'jpeg': 'bi-file-earmark-image',
+                'png': 'bi-file-earmark-image',
+                'gif': 'bi-file-earmark-image',
+                'svg': 'bi-file-earmark-image',
+                'mp3': 'bi-file-earmark-music',
+                'wav': 'bi-file-earmark-music',
+                'mp4': 'bi-file-earmark-play',
+                'mov': 'bi-file-earmark-play',
+                'avi': 'bi-file-earmark-play',
+                'zip': 'bi-file-earmark-zip',
+                'rar': 'bi-file-earmark-zip',
+                '7z': 'bi-file-earmark-zip',
+                'txt': 'bi-file-earmark-text',
+                'js': 'bi-file-earmark-code',
+                'py': 'bi-file-earmark-code',
+                'html': 'bi-file-earmark-code',
+                'css': 'bi-file-earmark-code'
+            };
+            return icons[ext] || 'bi-file-earmark';
+        }
+        
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            container.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            setTimeout(() => toast.remove(), 5000);
+        }
+        
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/auth/check');
+                const data = await res.json();
+                if (data.logged_in) {
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('drive-section').style.display = 'block';
+                    document.getElementById('user-name').textContent = data.user.username;
+                    currentUser = data.user;
+                    loadNodes();
+                }
+            } catch (e) {
+                console.error('Auth check failed:', e);
+            }
+        }
+        
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password})
+                });
+                const data = await res.json();
+                if (data.success) {
+                    checkAuth();
+                } else {
+                    document.getElementById('login-error').textContent = data.error;
+                }
+            } catch (e) {
+                document.getElementById('login-error').textContent = '登入失敗，請稍後再試';
+            }
+        });
+        
+        async function logout() {
+            await fetch('/api/auth/logout', {method: 'POST'});
+            location.reload();
+        }
+        
+        async function loadNodes() {
+            try {
+                const res = await fetch('/api/node/list');
+                const data = await res.json();
+                const nodeList = document.getElementById('node-list');
+                nodeList.innerHTML = '';
+                
+                const onlineNodes = Object.values(data.nodes).filter(n => n.status === 'online');
+                
+                if (onlineNodes.length === 0) {
+                    nodeList.innerHTML = `
+                        <li class="node-item">
+                            <i class="bi bi-exclamation-triangle text-warning"></i>
+                            <span>目前無可用節點</span>
+                        </li>
+                    `;
+                    return;
+                }
+                
+                onlineNodes.forEach(node => {
+                    const li = document.createElement('li');
+                    li.className = 'node-item';
+                    li.dataset.nodeId = node.id;
+                    const statusClass = node.status === 'online' ? 'online' : 'offline';
+                    li.innerHTML = `
+                        <span class="node-status ${statusClass}"></span>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500;">${node.name}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                                ${formatFileSize(node.used || 0)} / ${formatFileSize(node.capacity || 0)}
+                            </div>
+                        </div>
+                    `;
+                    li.onclick = () => selectNode(node.id, node);
+                    nodeList.appendChild(li);
+                });
+            } catch (e) {
+                console.error('Load nodes failed:', e);
+            }
+        }
+        
+        function selectNode(nodeId, node) {
+            currentNodeId = nodeId;
+            document.querySelectorAll('.node-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-node-id="${nodeId}"]`).classList.add('active');
+            
+            // Show storage card
+            const storageCard = document.getElementById('storage-card');
+            storageCard.style.display = 'block';
+            
+            const used = currentUser?.storage_used || 0;
+            let maxStorage, subtitle;
+            
+            // 如果用戶有配額限制，使用配額；否則使用節點容量
+            if (currentUser?.storage_quota > 0) {
+                maxStorage = currentUser.storage_quota;
+                subtitle = '個人儲存配額';
+            } else {
+                maxStorage = node.capacity || 1;
+                subtitle = '節點容量';
+            }
+            
+            const available = Math.max(0, maxStorage - used);
+            const percent = Math.min(100, (used / maxStorage) * 100);
+            
+            document.getElementById('storage-card-subtitle').textContent = subtitle;
+            document.getElementById('storage-card-used').textContent = formatFileSize(used);
+            document.getElementById('storage-card-available').textContent = formatFileSize(available);
+            document.getElementById('storage-card-bar').style.width = percent + '%';
+            
+            // Also update sidebar storage info
+            document.getElementById('storage-info').style.display = 'block';
+            document.getElementById('storage-bar-fill').style.width = percent + '%';
+            document.getElementById('storage-used').textContent = formatFileSize(used);
+            document.getElementById('storage-total').textContent = formatFileSize(maxStorage);
+            
+            refreshFiles();
+        }
+        
+        // File Upload
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                uploadFiles();
+            }
+        });
+        
+        fileInput.addEventListener('change', uploadFiles);
+        
+        async function uploadFiles() {
+            if (!currentNodeId) {
+                showToast('請先選擇儲存節點', 'error');
+                return;
+            }
+            
+            const files = fileInput.files;
+            if (!files.length) return;
+            
+            document.getElementById('upload-progress').classList.add('active');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('node_id', currentNodeId);
+                
+                try {
+                    const res = await fetch('/api/file/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        showToast(`${file.name} 上傳成功`, 'success');
+                    } else {
+                        showToast(`${file.name} 上傳失敗: ${data.error}`, 'error');
+                    }
+                } catch (e) {
+                    showToast(`${file.name} 上傳失敗`, 'error');
+                }
+                
+                const progress = ((i + 1) / files.length) * 100;
+                document.getElementById('progress-fill').style.width = progress + '%';
+            }
+            
+            document.getElementById('upload-progress').classList.remove('active');
+            document.getElementById('progress-fill').style.width = '0%';
+            fileInput.value = '';
+            
+            refreshFiles();
+            loadNodes();
+        }
+        
+        async function refreshFiles() {
+            if (!currentNodeId) return;
+            
+            try {
+                const res = await fetch('/api/file/by-node/' + currentNodeId);
+                const data = await res.json();
+                const container = document.getElementById('files-container');
+                const fileGrid = document.getElementById('file-grid');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (Object.keys(data.files).length === 0) {
+                    emptyState.style.display = 'block';
+                    fileGrid.style.display = 'none';
+                    emptyState.innerHTML = `
+                        <i class="bi bi-folder2-open"></i>
+                        <p>這個節點還沒有檔案</p>
+                    `;
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                fileGrid.style.display = 'grid';
+                fileGrid.innerHTML = '';
+                
+                Object.values(data.files).forEach(file => {
+                    const card = document.createElement('div');
+                    card.className = 'file-card';
+                    card.innerHTML = `
+                        <i class="bi ${getFileIcon(file.name)} file-icon"></i>
+                        <div class="file-name" title="${file.name}">${file.name}</div>
+                        <div class="file-meta">
+                            <span>${formatFileSize(file.size)}</span>
+                            <span>${new Date(file.uploaded_at * 1000).toLocaleDateString()}</span>
+                        </div>
+                        <div class="file-actions">
+                            <button class="btn btn-sm btn-outline-primary btn-icon" onclick="downloadFile('${file.id}')" title="下載">
+                                <i class="bi bi-download"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger btn-icon" onclick="deleteFile('${file.id}')" title="刪除">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    fileGrid.appendChild(card);
+                });
+            } catch (e) {
+                console.error('Load files failed:', e);
+            }
+        }
+        
+        function downloadFile(id) {
+            window.open('/api/file/download/' + id, '_blank');
+        }
+        
+        async function deleteFile(id) {
+            const result = await Swal.fire({
+                title: '確定要刪除這個檔案嗎？',
+                text: "此操作無法復原",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch('/api/file/' + id, {method: 'DELETE'});
+                const data = await res.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已刪除',
+                        text: '檔案已成功刪除',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    refreshFiles();
+                    loadNodes();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: data.error || '發生錯誤'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '刪除失敗',
+                    text: '發生錯誤'
+                });
+            }
+        }
+        
+        // ==================== 資料夾功能 ====================
+        let currentPath = '';
+        
+        async function showCreateFolderModal() {
+            if (!currentNodeId) {
+                showToast('請先選擇儲存節點', 'error');
+                return;
+            }
+            
+            const { value: folderName } = await Swal.fire({
+                title: '新增資料夾',
+                input: 'text',
+                inputLabel: '資料夾名稱',
+                inputPlaceholder: '請輸入資料夾名稱',
+                showCancelButton: true,
+                confirmButtonText: '建立',
+                cancelButtonText: '取消',
+                inputValidator: (value) => {
+                    if (!value || value.trim() === '') {
+                        return '請輸入資料夾名稱';
+                    }
+                    if (value.includes('..')) {
+                        return '資料夾名稱不能包含 ..';
+                    }
+                }
+            });
+            
+            if (folderName) {
+                try {
+                    const res = await fetch('/api/folder/create', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            node_id: currentNodeId,
+                            folder_name: folderName.trim(),
+                            path: currentPath
+                        })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        showToast('資料夾已建立', 'success');
+                        refreshFiles();
+                    } else {
+                        showToast(data.error || '建立失敗', 'error');
+                    }
+                } catch (e) {
+                    showToast('建立失敗', 'error');
+                }
+            }
+        }
+        
+        async function navigateToFolder(path) {
+            currentPath = path;
+            await refreshFiles();
+            updateBreadcrumb();
+        }
+        
+        function updateBreadcrumb() {
+            const breadcrumb = document.getElementById('breadcrumb');
+            
+            if (!currentNodeId || currentPath === '') {
+                breadcrumb.style.display = 'none';
+                return;
+            }
+            
+            breadcrumb.style.display = 'block';
+            
+            const parts = currentPath.split('/').filter(p => p);
+            let html = `
+                <li class="breadcrumb-item">
+                    <a href="#" onclick="navigateToFolder(''); return false;" style="color: var(--secondary-color);">
+                        <i class="bi bi-house"></i> 根目錄
+                    </a>
+                </li>
+            `;
+            
+            let currentBuild = '';
+            parts.forEach((part, index) => {
+                currentBuild += (currentBuild ? '/' : '') + part;
+                const isLast = index === parts.length - 1;
+                
+                if (isLast) {
+                    html += `<li class="breadcrumb-item active">${part}</li>`;
+                } else {
+                    html += `
+                        <li class="breadcrumb-item">
+                            <a href="#" onclick="navigateToFolder('${currentBuild}'); return false;" style="color: var(--secondary-color);">
+                                ${part}
+                            </a>
+                        </li>
+                    `;
+                }
+            });
+            
+            breadcrumb.querySelector('ol').innerHTML = html;
+        }
+        
+        async function refreshFiles() {
+            if (!currentNodeId) return;
+            
+            try {
+                // 無論是否有 currentPath，都使用 folder API 來獲取列表
+                // 這樣可以同時顯示資料夾和檔案
+                const folderRes = await fetch(`/api/folder/list?node_id=${currentNodeId}&path=${encodeURIComponent(currentPath)}`);
+                const folderData = await folderRes.json();
+                
+                const container = document.getElementById('files-container');
+                const fileGrid = document.getElementById('file-grid');
+                const emptyState = document.getElementById('empty-state');
+                
+                const folders = folderData.folders || [];
+                const files = folderData.files || [];
+                
+                if (folders.length === 0 && files.length === 0) {
+                    emptyState.style.display = 'block';
+                    fileGrid.style.display = 'none';
+                    emptyState.innerHTML = `
+                        <i class="bi bi-folder2-open"></i>
+                        <p>${currentPath ? '這個資料夾是空的' : '這個節點還沒有檔案'}</p>
+                    `;
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                fileGrid.style.display = 'grid';
+                fileGrid.innerHTML = '';
+                
+                // 顯示資料夾（支援拖拽放置）
+                folders.forEach(folder => {
+                    const card = document.createElement('div');
+                    card.className = 'file-card';
+                    card.style.cursor = 'pointer';
+                    card.dataset.isFolder = 'true';
+                    card.dataset.path = folder.path;
+                    card.draggable = true;
+
+                    // 憿舐內鞈?憭橘??舀?頧賢???
+                    card.ondragover = (e) => {
+                        e.preventDefault();
+                        card.classList.add('folder-drop-zone');
+                    };
+                    card.ondragleave = () => {
+                        card.classList.remove('folder-drop-zone');
+                    };
+                    card.ondrop = async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        card.classList.remove('folder-drop-zone');
+
+                        const draggingCard = document.querySelector('.file-card.dragging');
+                        if (draggingCard) {
+                            // 媥?&?
+                            const draggedFileId = draggingCard.dataset.fileId;
+                            const draggedIsFolder = draggingCard.dataset.isFolder === 'true';
+                            const draggedFolderPath = draggingCard.dataset.path;
+                            
+                            if (draggedFileId) {
+                                // 憿舐內瑼＆?
+                                await moveFileToFolder(draggedFileId, folder.path);
+                            } else if (draggedIsFolder && draggedFolderPath && draggedFolderPath !== folder.path) {
+                                // 憿舐內??格?鞈??
+                                await moveFolderToFolder(draggedFolderPath, folder.path);
+                            }
+                        }
+                    };
+                    
+                    // 鞈?憭橘????
+                    card.ondragstart = (e) => {
+                        card.classList.add('dragging');
+                        e.dataTransfer.setData('text/plain', JSON.stringify({
+                            isFolder: true,
+                            path: folder.path,
+                            name: folder.name
+                        }));
+                    };
+                    
+                    // 鞈?憭橘????
+                    card.ondragend = () => {
+                        card.classList.remove('dragging');
+                    };
+                    
+                    card.onclick = () => navigateToFolder(folder.path);
+                    
+                    // 獲取相對於當前路徑的資料夾路徑
+                    const folderRelativePath = folder.path;
+                    
+                    card.innerHTML = `
+                        <i class="bi bi-folder-fill file-icon" style="color: #fbbf24;"></i>
+                        <div class="file-name" title="${folder.name}">${folder.name}</div>
+                        <div class="file-meta">
+                            <span>資料夾</span>
+                        </div>
+                        <div class="file-actions">
+                            <button class="btn btn-sm btn-outline-danger btn-icon" onclick="event.stopPropagation(); deleteFolder('${folderRelativePath}')" title="刪除">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    fileGrid.appendChild(card);
+                });
+                
+                // 顯示檔案（支援拖拽）
+                // 先建立檔案列表以便多選時使用索引
+                currentFilesList = files;
+                
+                files.forEach((file, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'file-card';
+                    card.dataset.fileId = file.id;
+                    card.dataset.index = index;
+                    card.draggable = true;
+                    
+                    // 點擊事件（支援 Shift 多選）
+                    card.onclick = (e) => {
+                        // 確保不是點擊按鈕
+                        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+                        handleFileClick(file.id, index, e);
+                    };
+                    
+                    // 拖拽開始
+                    card.ondragstart = (e) => {
+                        card.classList.add('dragging');
+                    };
+                    
+                    // 拖拽結束
+                    card.ondragend = () => {
+                        card.classList.remove('dragging');
+                    };
+                    
+                    // 判斷是否在子資料夾中（需要顯示移至根目錄按鈕）
+                    const showMoveToRoot = currentPath !== '';
+                    
+                    // 獲取正確的檔案路徑和名稱
+                    const filePath = file.path || file.id;
+                    const fileName = file.name || filePath.split('/').pop();
+                    
+                    card.innerHTML = `
+                        <i class="bi ${getFileIcon(fileName)} file-icon"></i>
+                        <div class="file-name" title="${fileName}">${fileName}</div>
+                        <div class="file-meta">
+                            <span>${formatFileSize(file.size)}</span>
+                        </div>
+                        <div class="file-actions">
+                            ${showMoveToRoot ? `
+                            <button class="btn btn-sm btn-outline-warning btn-icon" onclick="event.stopPropagation(); moveFileToRoot('${file.id}')" title="移至根目錄">
+                                <i class="bi bi-arrow-up-circle"></i>
+                            </button>
+                            ` : ''}
+                            <button class="btn btn-sm btn-outline-primary btn-icon" onclick="event.stopPropagation(); previewFile('${filePath}', '${fileName}')" title="預覽">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success btn-icon" onclick="event.stopPropagation(); downloadFolderFile('${file.id}')" title="下載">
+                                <i class="bi bi-download"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger btn-icon" onclick="event.stopPropagation(); deleteFile('${file.id}')" title="刪除">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    fileGrid.appendChild(card);
+                });
+                
+                // 如果在子資料夾中，顯示拖拽到空白處可移至根目錄的提示
+                if (currentPath !== '') {
+                    const dropHint = document.createElement('div');
+                    dropHint.className = 'text-center mt-3 p-2';
+                    dropHint.style.cssText = 'border: 2px dashed var(--border-color); border-radius: 8px; color: var(--text-secondary); cursor: pointer;';
+                    dropHint.innerHTML = '<i class="bi bi-arrow-up-circle me-2"></i>將檔案拖曳到這裡可移至根目錄';
+                    dropHint.ondragover = (e) => {
+                        e.preventDefault();
+                        dropHint.style.borderColor = 'var(--secondary-color)';
+                        dropHint.style.background = 'rgba(20, 184, 166, 0.1)';
+                    };
+                    dropHint.ondragleave = () => {
+                        dropHint.style.borderColor = 'var(--border-color)';
+                        dropHint.style.background = 'transparent';
+                    };
+                    dropHint.ondrop = async (e) => {
+                        e.preventDefault();
+                        dropHint.style.borderColor = 'var(--border-color)';
+                        dropHint.style.background = 'transparent';
+
+                        const draggingCard = document.querySelector('.file-card.dragging');
+                        if (draggingCard) {
+                            const draggedFileId = draggingCard.dataset.fileId;
+                            const draggedIsFolder = draggingCard.dataset.isFolder === 'true';
+                            const draggedFolderPath = draggingCard.dataset.path;
+                            
+                            if (draggedFileId) {
+                                // 移動檔案到根目錄
+                                await moveFileToFolder(draggedFileId, '');
+                            } else if (draggedIsFolder && draggedFolderPath) {
+                                // 移動資料夾到根目錄
+                                await moveFolderToFolder(draggedFolderPath, '');
+                            }
+                        }
+                    };
+                    fileGrid.appendChild(dropHint);
+                }
+            } catch (e) {
+                console.error('Load files failed:', e);
+            }
+        }
+        
+        // ==================== 預覽功能 ====================
+        
+        // 預覽函數 - 接收完整檔案物件
+        async function previewFile(filePath, fileName) {
+            if (!currentNodeId) {
+                showToast('請先選擇儲存節點', 'error');
+                return;
+            }
+            
+            // 如果沒有傳入 fileName，嘗試從 path 取得
+            if (!fileName) {
+                fileName = filePath;
+            }
+            
+            // 取得副檔名
+            const ext = fileName.split('.').pop().toLowerCase();
+            const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'ico'];
+            const textExts = ['txt', 'json', 'xml', 'html', 'css', 'js', 'md', 'py', 'java', 'c', 'cpp', 'h', 'sh', 'log', 'csv', 'yaml', 'yml', 'ini', 'cfg', 'conf'];
+            const videoExts = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'wmv', 'flv'];
+            const audioExts = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'wma'];
+            
+            try {
+                if (imageExts.includes(ext)) {
+                    // 圖片預覽 - 正確使用預覽端點
+                    // filePath 可能是完整路徑或檔案名稱，嘗試獲取正確的路徑
+                    let previewPath = filePath;
+                    
+                    // 如果 filePath 看起來像 ID（不包含路徑分隔符），則需要從 API 獲取正確路徑
+                    if (!filePath.includes('/') && !filePath.includes('\\')) {
+                        // 嘗試從當前檔案列表中找到正確的路徑
+                        const files = currentFilesList || [];
+                        const file = files.find(f => f.id === filePath || f.name === filePath);
+                        if (file && file.path) {
+                            previewPath = file.path;
+                        }
+                    }
+                    
+                    const url = `/api/file/preview/${encodeURIComponent(previewPath)}?node_id=${currentNodeId}`;
+                    await showImagePreview(url, fileName);
+                } else if (textExts.includes(ext)) {
+                    // 文字檔案預覽
+                    await showTextPreviewFromPath(filePath);
+                } else if (videoExts.includes(ext)) {
+                    // 影片預覽
+                    await showVideoPreview(filePath, fileName);
+                } else if (audioExts.includes(ext)) {
+                    // 音頻預覽
+                    await showAudioPreview(filePath, fileName);
+                } else if (ext === 'pdf') {
+                    // PDF 預覽
+                    window.open(`/api/file/preview/${encodeURIComponent(filePath)}?node_id=${currentNodeId}`, '_blank');
+                } else {
+                    showToast('此檔案類型不支援預覽: ' + ext, 'error');
+                }
+            } catch (e) {
+                console.error('Preview failed:', e);
+                showToast('預覽失敗', 'error');
+            }
+        }
+        
+        // 向後兼容：舊的調用方式
+        async function previewFileByPath(filePath) {
+            await previewFile(filePath, filePath.split('/').pop());
+        }
+        
+        async function showImagePreview(url, filename) {
+            // 使用 SweetAlert2 在彈窗中顯示圖片
+            Swal.fire({
+                title: filename,
+                imageUrl: url,
+                imageAlt: filename,
+                width: '80%',
+                confirmButtonText: '關閉'
+            });
+        }
+        
+        // 影片預覽 - 使用下載端點
+        async function showVideoPreview(filePath, fileName) {
+            // 嘗試獲取實際的檔案 ID - 改進匹配邏輯
+            let fileId = null;
+            
+            try {
+                const res = await fetch(`/api/file/by-node/${currentNodeId}`);
+                const data = await res.json();
+                const files = Object.values(data.files || {});
+                
+                // 嘗試多種方式匹配：完整路徑、檔案名稱、或直接使用 filePath 作為 ID
+                file = files.find(f => 
+                    f.path === filePath || 
+                    f.name === filePath.split('/').pop() ||
+                    f.id === filePath ||
+                    (f.path && f.path.endsWith(filePath.split('/').pop()))
+                );
+                
+                if (file) {
+                    fileId = file.id;
+                } else {
+                    // 如果找不到，嘗試直接用 filePath 作為 ID（可能是 user_id/file_id 格式）
+                    const parts = filePath.split('/');
+                    if (parts.length >= 2) {
+                        // 假設最後一段是 file_id
+                        fileId = parts[parts.length - 1];
+                    }
+                }
+            } catch (e) {
+                console.error('Get file ID failed:', e);
+            }
+            
+            // 優先使用下載端點進行串流播放
+            const url = fileId ? `/api/file/download/${fileId}?stream=true` : `/api/file/preview/${encodeURIComponent(filePath)}?node_id=${currentNodeId}`;
+            
+            const videoExtensions = {
+                'mp4': 'video/mp4',
+                'webm': 'video/webm',
+                'ogg': 'video/ogg',
+                'mov': 'video/quicktime',
+                'avi': 'video/x-msvideo',
+                'mkv': 'video/x-matroska',
+                'wmv': 'video/x-ms-wmv',
+                'flv': 'video/x-flv'
+            };
+            const ext = fileName.split('.').pop().toLowerCase();
+            const mimeType = videoExtensions[ext] || 'video/mp4';
+            
+            Swal.fire({
+                title: fileName,
+                html: `
+                    <video controls style="width: 100%; max-height: 70vh; border-radius: 8px;">
+                        <source src="${url}" type="${mimeType}">
+                        您的瀏覽器不支援影片播放
+                    </video>
+                    <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">如果影片無法播放，請嘗試下載後播放</p>
+                `,
+                width: '80%',
+                confirmButtonText: '關閉'
+            });
+        }
+        
+        // 音頻預覽 - 使用下載端點
+        async function showAudioPreview(filePath, fileName) {
+            // 嘗試獲取實際的檔案 ID
+            const fileId = await getFileIdByPath(filePath);
+            const url = fileId ? `/api/file/download/${fileId}?stream=true` : `/api/file/preview/${encodeURIComponent(filePath)}?node_id=${currentNodeId}`;
+            const audioExtensions = {
+                'mp3': 'audio/mpeg',
+                'wav': 'audio/wav',
+                'ogg': 'audio/ogg',
+                'flac': 'audio/flac',
+                'aac': 'audio/aac',
+                'm4a': 'audio/mp4',
+                'wma': 'audio/x-ms-wma'
+            };
+            const ext = fileName.split('.').pop().toLowerCase();
+            const mimeType = audioExtensions[ext] || 'audio/mpeg';
+            
+            Swal.fire({
+                title: fileName,
+                html: `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="bi bi-music-note-beamed" style="font-size: 4rem; color: var(--secondary-color); margin-bottom: 20px;"></i>
+                        <audio controls style="width: 100%;">
+                            <source src="${url}" type="${mimeType}">
+                            您的瀏覽器不支援音頻播放
+                        </audio>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">如果音頻無法播放，請嘗試下載後播放</p>
+                `,
+                width: '60%',
+                confirmButtonText: '關閉'
+            });
+        }
+        
+        // 通過路徑獲取檔案 ID
+        async function getFileIdByPath(filePath) {
+            try {
+                const res = await fetch(`/api/file/by-node/${currentNodeId}`);
+                const data = await res.json();
+                const files = Object.values(data.files || {});
+                const file = files.find(f => f.path === filePath || f.name === filePath.split('/').pop());
+                return file ? file.id : null;
+            } catch (e) {
+                console.error('Get file ID failed:', e);
+                return null;
+            }
+        }
+        
+        async function showTextPreview(fileId) {
+            try {
+                const res = await fetch('/api/file/download/' + fileId);
+                const text = await res.text();
+                
+                Swal.fire({
+                    title: '文字預覽',
+                    html: `<pre style="background: var(--dark-bg); color: var(--text-primary); padding: 1rem; border-radius: 8px; max-height: 70vh; overflow: auto; text-align: left; white-space: pre-wrap; word-break: break-all;">${escapeHtml(text)}</pre>`,
+                    width: '80%'
+                });
+            } catch (e) {
+                showToast('預覽失敗', 'error');
+            }
+        }
+        
+        async function showTextPreviewFromPath(filePath) {
+            try {
+                const url = `/api/file/preview/${encodeURIComponent(filePath)}?node_id=${currentNodeId}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if (data.success && data.type === 'text') {
+                    Swal.fire({
+                        title: filePath.split('/').pop(),
+                        html: `<pre style="background: var(--dark-bg); color: var(--text-primary); padding: 1rem; border-radius: 8px; max-height: 70vh; overflow: auto; text-align: left; white-space: pre-wrap; word-break: break-all;">${escapeHtml(data.content)}</pre>`,
+                        width: '80%'
+                    });
+                } else {
+                    showToast('預覽失敗', 'error');
+                }
+            } catch (e) {
+                showToast('預覽失敗', 'error');
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function downloadFolderFile(fileId) {
+            window.open('/api/file/download/' + fileId, '_blank');
+        }
+        
+        // ==================== 拖拽功能 ====================
+        let draggedFileId = null;
+        
+        // 初始化拖拽事件
+        function initDragAndDrop() {
+            const fileGrid = document.getElementById('file-grid');
+            
+            // 拖拽開始
+            fileGrid.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('file-card')) {
+                    e.target.classList.add('dragging');
+                }
+            });
+            
+            // 拖拽結束
+            fileGrid.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('file-card')) {
+                    e.target.classList.remove('dragging');
+                }
+                // 移除所有資料夾的拖放樣式
+                document.querySelectorAll('.folder-drop-zone').forEach(el => {
+                    el.classList.remove('folder-drop-zone');
+                });
+            });
+            
+            // 拖拽經過
+            fileGrid.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            // 放置
+            fileGrid.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                const draggingCard = document.querySelector('.file-card.dragging');
+                if (!draggingCard) return;
+                
+                const targetCard = e.target.closest('.file-card');
+                if (!targetCard) return;
+                
+                const targetIsFolder = targetCard.querySelector('.bi-folder-fill');
+                if (!targetIsFolder) return;
+                
+                // 獲取目標資料夾路徑
+                const folderPath = targetCard.dataset.path || '';
+                
+                // 獲取被拖拽的檔案 ID
+                const fileId = draggingCard.dataset.fileId;
+                
+                if (fileId && folderPath !== undefined) {
+                    // 移動檔案到目標資料夾
+                    await moveFileToFolder(fileId, folderPath);
+                }
+                
+                draggingCard.classList.remove('dragging');
+            });
+        }
+        
+        // 移動檔案到資料夾
+        async function moveFileToFolder(fileId, targetFolder) {
+            try {
+                const res = await fetch('/api/file/move', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        node_id: currentNodeId,
+                        file_id: fileId,
+                        target_folder: targetFolder
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    if (targetFolder === '') {
+                        showToast('檔案已移至根目錄', 'success');
+                    } else {
+                        showToast('檔案已移動', 'success');
+                    }
+                    refreshFiles();
+                } else {
+                    showToast(data.error || '移動失敗', 'error');
+                }
+            } catch (e) {
+                showToast('移動失敗', 'error');
+            }
+        }
+        
+        // 移動資料夾到另一個資料夾
+        async function moveFolderToFolder(sourcePath, targetPath) {
+            try {
+                const res = await fetch('/api/folder/move', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        node_id: currentNodeId,
+                        source_path: sourcePath,
+                        target_path: targetPath
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    if (targetPath === '') {
+                        showToast('資料夾已移至根目錄', 'success');
+                    } else {
+                        showToast('資料夾已移動', 'success');
+                    }
+                    refreshFiles();
+                } else {
+                    showToast(data.error || '移動失敗', 'error');
+                }
+            } catch (e) {
+                showToast('移動失敗', 'error');
+            }
+        }
+        
+        // 移至根目錄（快捷函數）
+        async function moveFileToRoot(fileId) {
+            await moveFileToFolder(fileId, '');
+        }
+        
+        // 刪除資料夾
+        async function deleteFolder(folderPath) {
+            const result = await Swal.fire({
+                title: '確定要刪除這個資料夾嗎？',
+                text: "此操作無法復原。",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch('/api/folder/delete', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        node_id: currentNodeId,
+                        folder_path: folderPath
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已刪除',
+                        text: '資料夾已成功刪除',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    refreshFiles();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: data.error || '發生錯誤'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '刪除失敗',
+                    text: '發生錯誤'
+                });
+            }
+        }
+        
+        // 更新 file card 的渲染，添加拖拽屬性
+        function renderFileCard(file, isFolder = false) {
+            const card = document.createElement('div');
+            card.className = 'file-card';
+            
+            if (isFolder) {
+                card.style.cursor = 'pointer';
+                card.dataset.path = file.path;
+                card.ondragover = (e) => {
+                    e.preventDefault();
+                    card.classList.add('folder-drop-zone');
+                };
+                card.ondragleave = () => {
+                    card.classList.remove('folder-drop-zone');
+                };
+                card.ondrop = async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    card.classList.remove('folder-drop-zone');
+                    
+                    const draggingCard = document.querySelector('.file-card.dragging');
+                    if (draggingCard) {
+                        const draggedFileId = draggingCard.dataset.fileId;
+                        if (draggedFileId) {
+                            await moveFileToFolder(draggedFileId, file.path);
+                        }
+                    }
+                };
+                card.onclick = () => navigateToFolder(file.path);
+                card.innerHTML = `
+                    <i class="bi bi-folder-fill file-icon" style="color: #fbbf24;"></i>
+                    <div class="file-name" title="${file.name}">${file.name}</div>
+                    <div class="file-meta">
+                        <span>資料夾</span>
+                    </div>
+                `;
+            } else {
+                card.dataset.fileId = file.id;
+                card.draggable = true;
+                card.innerHTML = `
+                    <i class="bi ${getFileIcon(file.name)} file-icon"></i>
+                    <div class="file-name" title="${file.name}">${file.name}</div>
+                    <div class="file-meta">
+                        <span>${formatFileSize(file.size)}</span>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn btn-sm btn-outline-primary btn-icon" onclick="event.stopPropagation(); previewFile('${file.path}')" title="預覽">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success btn-icon" onclick="event.stopPropagation(); downloadFolderFile('${file.id}')" title="下載">
+                            <i class="bi bi-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger btn-icon" onclick="event.stopPropagation(); deleteFile('${file.id}')" title="刪除">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            return card;
+        }
+        
+        // Initialize
+        checkAuth();
+        initDragAndDrop();
+    </script>
+</body>
+</html>
