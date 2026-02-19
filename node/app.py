@@ -16,6 +16,8 @@ import shutil
 import mimetypes
 import requests
 import threading
+import zipfile
+import io
 from functools import wraps
 from flask import Flask, request, jsonify, send_file, abort
 
@@ -501,6 +503,59 @@ def retrieve_file(file_id):
         return send_file(file_path, download_name=filename, as_attachment=True)
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/node/batch-download', methods=['POST'])
+@verify_token
+def batch_download():
+    """批次下載多個檔案為 ZIP 壓縮檔"""
+    data = request.get_json() or {}
+    file_ids = data.get('file_ids', [])
+    folder_path = data.get('folder_path', '')
+    user_id = data.get('user_id', 'unknown')
+    
+    if not file_ids:
+        return jsonify({'success': False, 'error': '請選擇要下載的檔案'}), 400
+    
+    files = load_files()
+    
+    # 創建記憶體中的 ZIP 檔案
+    zip_buffer = io.BytesIO()
+    
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for file_id in file_ids:
+            if file_id not in files:
+                continue
+            
+            file_info = files[file_id]
+            folder = file_info.get('folder', '')
+            
+            # 建構檔案的完整路徑
+            user_dir = os.path.join(STORAGE_DIR, user_id)
+            if folder:
+                user_dir = os.path.join(user_dir, folder)
+            file_path = os.path.join(user_dir, file_id)
+            
+            if os.path.exists(file_path):
+                # 使用原始檔案名稱作為 ZIP 內的檔案名稱
+                filename = file_info.get('name', file_id)
+                if folder_path:
+                    # 如果有指定資料夾路徑，將檔案放入 ZIP 中的該資料夾
+                    arcname = os.path.join(folder_path, filename)
+                else:
+                    arcname = filename
+                zipf.write(file_path, arcname)
+    
+    zip_buffer.seek(0)
+    
+    # 生成 ZIP 檔案名稱
+    zip_name = f"download_{int(time.time())}.zip"
+    
+    return send_file(
+        zip_buffer,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name=zip_name
+    )
 
 @app.route('/api/node/delete/<file_id>', methods=['DELETE'])
 @verify_token
