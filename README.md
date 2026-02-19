@@ -29,10 +29,14 @@
 - ✅ 開發者 API Token 支援
 - ✅ 帳戶控制系統
 - ✅ 準確的節點綁定機制（兩步驟驗證）
-- ✅ 資料夾管理
+- ✅ 資料夾管理（建立、刪除、移動）
+- ✅ 資料夾移動時自動移動內部子資料夾和檔案
+- ✅ 刪除資料夾時自動扣除用戶配額
 - ✅ 檔案拖拽移動
 - ✅ 圖片/影片預覽
 - ✅ 批量操作功能（多選刪除、移動、下載）
+- ✅ 批次下載 ZIP 壓縮檔
+- ✅ Shift + 點擊多選
 
 ## 環境需求
 
@@ -56,8 +60,7 @@ python init_admin.py
 
 按照提示輸入管理員帳號和密碼。
 
-### 3. 啟動 Panel
-
+### 3. 啟動控制面板
 ```bash
 cd panel
 python app.py
@@ -123,6 +126,7 @@ X-API-Token: your_token_here
 | `folder:list` | 列出資料夾內容 |
 | `folder:create` | 建立資料夾 |
 | `folder:delete` | 刪除資料夾 |
+| `folder:write` | 移動資料夾 |
 | `user:read` | 讀取用戶資訊 |
 | `user:create` | 建立用戶 |
 | `user:update` | 更新用戶 |
